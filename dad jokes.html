@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dad Jokes Collection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #a8c8ec 0%, #7faadb 50%, #5d8bc7 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .title {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .joke-counter {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .counter-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .counter-number {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        
+        .joke-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.6s ease-out forwards;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .joke-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .joke-emoji {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .nav-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            min-width: 120px;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .nav-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .joke-list {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+        
+        .joke-list.show {
+            display: block;
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        .joke-list h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .joke-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .joke-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .joke-item-text {
+            color: #2d3748;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .joke-item-number {
+            color: #5d8bc7;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .joke-container {
+                padding: 25px;
+                min-height: 150px;
+            }
+            
+            .joke-text {
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .nav-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">😂 Dad Jokes</h1>
+            <p class="subtitle">The finest collection of groan-worthy humor</p>
+            <div class="controls">
+                <button class="btn" onclick="getRandomJoke()">Random Joke</button>
+                <button class="btn" onclick="toggleJokeList()">View All Jokes</button>
+            </div>
+        </div>
+        
+        <div class="joke-counter">
+            <div class="counter-text">Joke</div>
+            <div class="counter-number" id="jokeNumber">1</div>
+            <div class="counter-text">of <span id="totalJokes">55</span></div>
+        </div>
+        
+        <div class="joke-container" id="jokeContainer">
+            <div class="joke-emoji" id="jokeEmoji">😄</div>
+            <div class="joke-text" id="jokeText">Loading a fantastic dad joke...</div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn nav-btn" id="prevBtn" onclick="previousJoke()">← Previous</button>
+            <button class="btn nav-btn" id="nextBtn" onclick="nextJoke()">Next →</button>
+        </div>
+        
+        <div class="joke-list" id="jokeList">
+            <h3>All Dad Jokes</h3>
+            <div id="jokeListContent"></div>
+        </div>
+    </div>
+
+    <script>
+        class DadJokeApp {
+            constructor() {
+                this.jokes = [
+                    "Why don't scientists trust atoms? Because they make up everything!",
+                    "I told my wife she was drawing her eyebrows too high. She looked surprised.",
+                    "Why don't eggs tell jokes? They'd crack each other up!",
+                    "I used to hate facial hair, but then it grew on me.",
+                    "What do you call a fake noodle? An impasta!",
+                    "Why did the scarecrow win an award? He was outstanding in his field!",
+                    "I only know 25 letters of the alphabet. I don't know Y.",
+                    "What's the best thing about Switzerland? I don't know, but the flag is a big plus.",
+                    "Why don't skeletons fight each other? They don't have the guts.",
+                    "What do you call a dinosaur that crashes his car? Tyrannosaurus Wrecks!",
+                    "I'm reading a book about anti-gravity. It's impossible to put down!",
+                    "Why did the math book look so sad? Because it had too many problems.",
+                    "What do you call a bear with no teeth? A gummy bear!",
+                    "Why don't scientists trust stairs? Because they're always up to something.",
+                    "I used to be a banker, but I lost interest.",
+                    "What do you call a sleeping bull? A bulldozer!",
+                    "Why did the coffee file a police report? It got mugged!",
+                    "What's orange and sounds like a parrot? A carrot!",
+                    "Why don't oysters share? Because they're shellfish!",
+                    "What do you call a fish wearing a crown? A king fish!",
+                    "I'm terrified of elevators, so I take steps to avoid them.",
+                    "Why did the bicycle fall over? It was two-tired!",
+                    "What do you call a cow with no legs? Ground beef!",
+                    "Why don't melons get married? Because they cantaloupe!",
+                    "What did the ocean say to the beach? Nothing, it just waved.",
+                    "Why did the cookie go to the doctor? Because it felt crumbly!",
+                    "What do you call a pig that does karate? A pork chop!",
+                    "Why don't eggs tell each other jokes? They'd crack up!",
+                    "What's a skeleton's least favorite room? The living room!",
+                    "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
+                    "What do you call a factory that makes okay products? A satisfactory!",
+                    "Why don't scientists trust atoms? Because they make up everything!",
+                    "What do you call a belt made of watches? A waist of time!",
+                    "Why did the tomato turn red? Because it saw the salad dressing!",
+                    "What do you call a deer with no eyes? No-eye deer (no idea)!",
+                    "Why don't programmers like nature? It has too many bugs.",
+                    "What do you call a cow in an earthquake? A milkshake!",
+                    "Why did the stadium get hot after the game? All the fans left!",
+                    "What do you call a fake stone? A shamrock!",
+                    "Why don't scientists trust atoms? Because they make up everything!",
+                    "What did one wall say to the other wall? I'll meet you at the corner!",
+                    "Why don't eggs tell jokes? They'd crack each other up!",
+                    "What do you call a sleeping bull? A bulldozer!",
+                    "Why did the math book look so sad? Because it had too many problems.",
+                    "What's the best thing about Switzerland? I don't know, but the flag is a big plus.",
+                    "Why don't skeletons fight each other? They don't have the guts.",
+                    "What do you call a dinosaur that crashes his car? Tyrannosaurus Wrecks!",
+                    "I'm reading a book about anti-gravity. It's impossible to put down!",
+                    "Why did the scarecrow win an award? He was outstanding in his field!",
+                    "What do you call a bear with no teeth? A gummy bear!",
+                    "Why don't scientists trust stairs? Because they're always up to something.",
+                    "What do you call a fish wearing a crown? A king fish!",
+                    "Why did the bicycle fall over? It was two-tired!",
+                    "What do you call a cow with no legs? Ground beef!",
+                    "Why don't melons get married? Because they cantaloupe!"
+                ];
+                
+                this.emojis = ['😂', '😄', '😆', '🤣', '😊', '😁', '🙃', '😋', '🤪', '😜'];
+                this.currentJokeIndex = 0;
+                this.isListVisible = false;
+                
+                this.jokeText = document.getElementById('jokeText');
+                this.jokeEmoji = document.getElementById('jokeEmoji');
+                this.jokeNumber = document.getElementById('jokeNumber');
+                this.totalJokes = document.getElementById('totalJokes');
+                this.jokeContainer = document.getElementById('jokeContainer');
+                this.jokeList = document.getElementById('jokeList');
+                this.jokeListContent = document.getElementById('jokeListContent');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                
+                this.init();
+            }
+            
+            init() {
+                this.totalJokes.textContent = this.jokes.length;
+                this.displayJoke(0);
+                this.createJokeList();
+                this.updateNavigationButtons();
+            }
+            
+            displayJoke(index) {
+                this.currentJokeIndex = index;
+                
+                // Animate out
+                this.jokeContainer.style.transform = 'translateY(20px)';
+                this.jokeContainer.style.opacity = '0';
+                
+                setTimeout(() => {
+                    this.jokeText.textContent = this.jokes[index];
+                    this.jokeEmoji.textContent = this.emojis[Math.floor(Math.random() * this.emojis.length)];
+                    this.jokeNumber.textContent = index + 1;
+                    
+                    // Animate in
+                    this.jokeContainer.style.transform = 'translateY(0)';
+                    this.jokeContainer.style.opacity = '1';
+                    
+                    this.updateNavigationButtons();
+                }, 300);
+            }
+            
+            getRandomJoke() {
+                const randomIndex = Math.floor(Math.random() * this.jokes.length);
+                this.displayJoke(randomIndex);
+            }
+            
+            nextJoke() {
+                if (this.currentJokeIndex < this.jokes.length - 1) {
+                    this.displayJoke(this.currentJokeIndex + 1);
+                }
+            }
+            
+            previousJoke() {
+                if (this.currentJokeIndex > 0) {
+                    this.displayJoke(this.currentJokeIndex - 1);
+                }
+            }
+            
+            updateNavigationButtons() {
+                this.prevBtn.disabled = this.currentJokeIndex === 0;
+                this.nextBtn.disabled = this.currentJokeIndex === this.jokes.length - 1;
+            }
+            
+            toggleJokeList() {
+                this.isListVisible = !this.isListVisible;
+                
+                if (this.isListVisible) {
+                    this.jokeList.classList.add('show');
+                    document.querySelector('.controls button:nth-child(2)').textContent = 'Hide List';
+                } else {
+                    this.jokeList.classList.remove('show');
+                    document.querySelector('.controls button:nth-child(2)').textContent = 'View All Jokes';
+                }
+            }
+            
+            createJokeList() {
+                this.jokeListContent.innerHTML = '';
+                
+                this.jokes.forEach((joke, index) => {
+                    const jokeItem = document.createElement('div');
+                    jokeItem.className = 'joke-item';
+                    jokeItem.innerHTML = `
+                        <div class="joke-item-number">Joke #${index + 1}</div>
+                        <div class="joke-item-text">${joke}</div>
+                    `;
+                    
+                    jokeItem.addEventListener('click', () => {
+                        this.displayJoke(index);
+                        this.toggleJokeList();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                    
+                    this.jokeListContent.appendChild(jokeItem);
+                });
+            }
+            
+
+            
+            showMessage(text) {
+                const message = document.createElement('div');
+                message.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(255, 255, 255, 0.95);
+                    color: #2d3748;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                    z-index: 1000;
+                    font-weight: 500;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                `;
+                message.textContent = text;
+                
+                document.body.appendChild(message);
+                
+                setTimeout(() => {
+                    message.style.transform = 'translateX(0)';
+                }, 100);
+                
+                setTimeout(() => {
+                    message.style.transform = 'translateX(100%)';
+                    setTimeout(() => message.remove(), 300);
+                }, 3000);
+            }
+        }
+        
+        // Global functions for button onclick handlers
+        let app;
+        
+        function getRandomJoke() {
+            app.getRandomJoke();
+        }
+        
+        function nextJoke() {
+            app.nextJoke();
+        }
+        
+        function previousJoke() {
+            app.previousJoke();
+        }
+        
+        function toggleJokeList() {
+            app.toggleJokeList();
+        }
+        
+
+        
+        // Initialize the app when page loads
+        window.addEventListener('load', () => {
+            app = new DadJokeApp();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96750296245b3b15',t:'MTc1Mzg4MDEyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
